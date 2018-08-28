@@ -5,10 +5,10 @@ var bodyParser = require('body-parser');
 
 // database connection
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/movies');
+mongoose.connect('mongodb://localhost:27017/imdb');
 
-// movie controller
-var MovieController = require('./app/controllers/movieController');
+// imdb controller
+var ImdbController = require('./app/controllers/imdbController');
 
 // configuring app to use body-parser
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 var port = process.env.PORT || 8080;
 
 // set a route prefix and controller
-app.use('/api/movies', MovieController);
+app.use('/api', ImdbController);
 
 // starting server
 app.listen(port);

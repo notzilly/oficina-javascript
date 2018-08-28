@@ -1,12 +1,14 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var MovieSchema = new Schema({
+var ImdbSchema = new Schema({
+    titleType: String,
     primaryTitle: String,
     originalTitle: String,
-    releaseYear: Number,
+    startYear: Number,
+    endYear: Number,
     runtimeMinutes: Number,
     genres: [String]
 });
 
-module.exports = mongoose.model('Movie', MovieSchema);
+module.exports = mongoose.model('Imdb', ImdbSchema, 'imdb');
