@@ -10,14 +10,28 @@ router.get('/filmes', function(req, res) { // get all the movies
         res.json({ message: movies });
     });
 
-}).get('/filmes/:filme_id', function(req, res) { // get a specific movie by id
+}).get('/series', function(req, res) { // get all the tvseries
 
-    Imdb.findById(req.params.filme_id, function(err, movie) {
-        if(err) res.json({ message: 'Nenhum filme encontrado com este id' });
-        res.json({ message: movie });
+    Imdb.find({ titleType: 'tvSeries' }, function(err, series) {
+        if(err) res.json({ message: 'Erro ao buscar todos as séries' });
+        res.json({ message: series });
     });
 
-}).get('/normalize', function(req, res) { // route to normalize genres of all entries
+}).get('/curtas', function(req, res) { // get all the short movies
+
+    Imdb.find({ titleType: 'short' }, function(err, shorts) {
+        if(err) res.json({ message: 'Erro ao buscar todos os curtas' });
+        res.json({ message: shorts });
+    });
+
+}).get('/todos/:id', function(req, res) { // get a specific entry by id
+
+    Imdb.findById(req.params.id, function(err, entry) {
+        if(err) res.json({ message: 'Erro ao buscar por entrada específica' });
+        res.json({ message: entry });
+    });
+
+}).get('/normalizar', function(req, res) { // route to normalize genres of all entries
    
     // run this to insert movies from movies.tsv before calling this route
     // mongoimport --db imdb --collection imdb --type tsv --headerline --file imdb.tsv --ignoreBlanks
