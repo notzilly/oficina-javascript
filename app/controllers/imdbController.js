@@ -51,6 +51,29 @@ router.get('/filmes', function(req, res) { // get all the movies
         res.json({ message: 'Filme "' + movie.primaryTitle + '" excluído com sucesso' });
     });
 
+}).put('/filmes/:filme_id', function(req, res) { // updates a movie by id
+
+    console.log('PUT /filmes/' + req.params.filme_id + ' received');
+
+    Imdb.findOne({ _id: req.params.filme_id, titleType: 'movie' }, function(err, movie) {
+        if(err) res.status(500).json({ message: 'Erro ao editar filme' });
+
+        movie.primaryTitle = req.body.tituloPrimario;
+        movie.originalTitle = req.body.tituloOriginal;
+        movie.startYear = req.body.anoInicio != '' ? req.body.anoInicio : undefined;
+        movie.endYear = req.body.anoFim != '' ? req.body.anoFim : undefined;
+        movie.runtimeMinutes = req.body.duracaoMinutos != '' ? req.body.duracaoMinutos : undefined;
+        movie.genres = req.body.generos != '' ? req.body.generos : undefined;
+
+        res.json({ message: 'Filme "' + movie.primaryTitle + '" editado com sucesso' });
+        // comment the line above and uncomment the ones below when in production
+        // movie.save(function(err, movie) {
+        //     if(err) res.status(500).json({ message: err });
+        //     res.json({ message: 'Filme "' + movie.primaryTitle + '" editado com sucesso' });
+        // });
+
+    });
+
 }).get('/series', function(req, res) { // get all the tvseries
 
     console.log('GET /series received');
