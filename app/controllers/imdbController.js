@@ -3,7 +3,7 @@ var router = express.Router();
 var Imdb = require('../models/imdb');
 
 // this controller uses the url /api + any of the routes listed below
-router.get('/filmes', function(req, res) { // get all the movies
+router.get('/filmes', function(req, res) { // GET: get all the movies
 
     console.log('GET /filmes received');
 
@@ -12,7 +12,7 @@ router.get('/filmes', function(req, res) { // get all the movies
         res.json(movies);
     });
 
-}).get('/filmes/:filme_id', function(req, res) { // get a specific movie by id
+}).get('/filmes/:filme_id', function(req, res) { // GET: get a specific movie by id
 
     console.log('GET /filmes/' + req.params.filme_id + ' received');
 
@@ -21,7 +21,7 @@ router.get('/filmes', function(req, res) { // get all the movies
         res.json(movie);
     });
 
-}).post('/filmes', function(req, res) { // create a new movie
+}).post('/filmes', function(req, res) { // POST: create a new movie
 
     console.log('POST /filmes received');
 
@@ -41,7 +41,7 @@ router.get('/filmes', function(req, res) { // get all the movies
     //     res.json(movie);
     // });
 
-}).delete('/filmes/:filme_id', function(req, res) { // deletes a movie by id
+}).delete('/filmes/:filme_id', function(req, res) { // DELETE: deletes a movie by id
 
     console.log('DELETE /filmes/' + req.params.filme_id + ' received');
 
@@ -51,7 +51,7 @@ router.get('/filmes', function(req, res) { // get all the movies
         res.json({ message: 'Filme "' + movie.primaryTitle + '" excluído com sucesso' });
     });
 
-}).put('/filmes/:filme_id', function(req, res) { // updates a movie by id
+}).put('/filmes/:filme_id', function(req, res) { // PUT: updates a movie by id
 
     console.log('PUT /filmes/' + req.params.filme_id + ' received');
 
@@ -74,7 +74,7 @@ router.get('/filmes', function(req, res) { // get all the movies
 
     });
 
-}).get('/series', function(req, res) { // get all the tvseries
+}).get('/series', function(req, res) { // GET: get all the tvseries
 
     console.log('GET /series received');
 
@@ -83,7 +83,7 @@ router.get('/filmes', function(req, res) { // get all the movies
         res.json(series);
     });
 
-}).get('/series/:serie_id', function(req, res) { // get a specific tvseries by id
+}).get('/series/:serie_id', function(req, res) { // GET: get a specific tvseries by id
 
     console.log('GET /series/' + req.params.serie_id + ' received');
 
@@ -92,7 +92,7 @@ router.get('/filmes', function(req, res) { // get all the movies
         res.json(series);
     });
 
-}).get('/curtas', function(req, res) { // get all the short movies
+}).get('/curtas', function(req, res) { // GET: get all the short movies
 
     console.log('GET /curtas received');
 
@@ -101,7 +101,7 @@ router.get('/filmes', function(req, res) { // get all the movies
         res.json(shorts);
     });
 
-}).get('/normalizar', function(req, res) { // route to normalize genres of all entries
+}).get('/normalizar', function(req, res) { // GET: route to normalize genres of all entries
    
     // run this to insert movies from movies.tsv before calling this route
     // mongoimport --db imdb --collection imdb --type tsv --headerline --file imdb.tsv --ignoreBlanks
