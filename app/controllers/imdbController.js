@@ -78,18 +78,18 @@ router.get('/filmes', function(req, res) { // GET: get all the movies
 
     console.log('GET /series received');
 
-    Imdb.find({ titleType: 'tvSeries' }, function(err, series) {
+    Imdb.find({ titleType: 'tvSeries' }, function(err, tvSeries) {
         if(err) res.status(500).json({ message: 'Erro ao buscar todas as séries' });
-        res.json(series);
+        res.json(tvSeries);
     });
 
 }).get('/series/:serie_id', function(req, res) { // GET: get a specific tvseries by id
 
     console.log('GET /series/' + req.params.serie_id + ' received');
 
-    Imdb.findOne({ _id: req.params.serie_id, titleType: 'tvSeries' }, function(err, series) {
+    Imdb.findOne({ _id: req.params.serie_id, titleType: 'tvSeries' }, function(err, tvSeries) {
         if(err) res.status(500).json({ message: 'Erro ao buscar por série' });
-        res.json(series);
+        res.json(tvSeries);
     });
 
 }).post('/series', function(req, res) { // POST: create a new tvseries
@@ -117,9 +117,32 @@ router.get('/filmes', function(req, res) { // GET: get all the movies
     console.log('DELETE /series/' + req.params.serie_id + ' received');
 
     // change to findOneAndDelete when in production
-    Imdb.findOne({ _id: req.params.serie_id, titleType: 'tvSeries' }, function(err, series) {
+    Imdb.findOne({ _id: req.params.serie_id, titleType: 'tvSeries' }, function(err, tvSeries) {
         if(err) res.status(500).json({ message: 'Erro ao excluir série' });
-        res.json({ message: 'Série "' + series.primaryTitle + '" excluída com sucesso' });
+        res.json({ message: 'Série "' + tvSeries.primaryTitle + '" excluída com sucesso' });
+    });
+
+}).put('/series/:serie_id', function(req, res) { // PUT: updates a tv series by id
+
+    console.log('PUT /series/' + req.params.serie_id + ' received');
+
+    Imdb.findOne({ _id: req.params.serie_id, titleType: 'tvSeries' }, function(err, tvSeries) {
+        if(err) res.status(500).json({ message: 'Erro ao editar série' });
+
+        tvSeries.primaryTitle = req.body.tituloPrimario;
+        tvSeries.originalTitle = req.body.tituloOriginal;
+        tvSeries.startYear = req.body.anoInicio != '' ? req.body.anoInicio : undefined;
+        tvSeries.endYear = req.body.anoFim != '' ? req.body.anoFim : undefined;
+        tvSeries.runtimeMinutes = req.body.duracaoMinutos != '' ? req.body.duracaoMinutos : undefined;
+        tvSeries.genres = req.body.generos != '' ? req.body.generos : undefined;
+
+        res.json({ message: 'Série "' + tvSeries.primaryTitle + '" editada com sucesso' });
+        // comment the line above and uncomment the ones below when in production
+        // tvSeries.save(function(err, tvSeries) {
+        //     if(err) res.status(500).json({ message: err });
+        //     res.json({ message: 'Série "' + tvSeries.primaryTitle + '" editada com sucesso' });
+        // });
+
     });
 
 }).get('/curtas', function(req, res) { // GET: get all the short movies
