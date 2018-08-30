@@ -112,6 +112,16 @@ router.get('/filmes', function(req, res) { // GET: get all the movies
     //     res.json(tvSeries);
     // });
 
+}).delete('/series/:serie_id', function(req, res) { // DELETE: deletes a tvseries by id
+
+    console.log('DELETE /series/' + req.params.serie_id + ' received');
+
+    // change to findOneAndDelete when in production
+    Imdb.findOne({ _id: req.params.serie_id, titleType: 'tvSeries' }, function(err, series) {
+        if(err) res.status(500).json({ message: 'Erro ao excluir série' });
+        res.json({ message: 'Série "' + series.primaryTitle + '" excluída com sucesso' });
+    });
+
 }).get('/curtas', function(req, res) { // GET: get all the short movies
 
     console.log('GET /curtas received');
