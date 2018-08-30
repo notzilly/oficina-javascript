@@ -92,6 +92,26 @@ router.get('/filmes', function(req, res) { // GET: get all the movies
         res.json(series);
     });
 
+}).post('/series', function(req, res) { // POST: create a new tvseries
+
+    console.log('POST /series received');
+
+    var tvSeries = new Imdb();
+    tvSeries.titleType = 'tvSeries';
+    tvSeries.primaryTitle = req.body.tituloPrimario;
+    tvSeries.originalTitle = req.body.tituloOriginal;
+    tvSeries.startYear = req.body.anoInicio != '' ? req.body.anoInicio : undefined;
+    tvSeries.endYear = req.body.anoFim != '' ? req.body.anoFim : undefined;
+    tvSeries.runtimeMinutes = req.body.duracaoMinutos != '' ? req.body.duracaoMinutos : undefined;
+    tvSeries.genres = req.body.generos != '' ? req.body.generos : undefined;
+
+    res.json(tvSeries);
+    // comment the line above and uncomment the ones below when in production
+    // tvSeries.save(function(err, tvSeries) {
+    //     if(err) res.status(500).json({ message: err });
+    //     res.json(tvSeries);
+    // });
+
 }).get('/curtas', function(req, res) { // GET: get all the short movies
 
     console.log('GET /curtas received');
