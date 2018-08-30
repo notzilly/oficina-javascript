@@ -163,6 +163,26 @@ router.get('/filmes', function(req, res) { // GET: get all the movies
         res.json(short);
     });
 
+}).post('/curtas', function(req, res) { // POST: create a new short movie
+
+    console.log('POST /curtas received');
+
+    var short = new Imdb();
+    short.titleType = 'short';
+    short.primaryTitle = req.body.tituloPrimario;
+    short.originalTitle = req.body.tituloOriginal;
+    short.startYear = req.body.anoInicio != '' ? req.body.anoInicio : undefined;
+    short.endYear = req.body.anoFim != '' ? req.body.anoFim : undefined;
+    short.runtimeMinutes = req.body.duracaoMinutos != '' ? req.body.duracaoMinutos : undefined;
+    short.genres = req.body.generos != '' ? req.body.generos : undefined;
+
+    res.json(short);
+    // comment the line above and uncomment the ones below when in production
+    // short.save(function(err, short) {
+    //     if(err) res.status(500).json({ message: err });
+    //     res.json(short);
+    // });
+
 }).get('/normalizar', function(req, res) { // GET: route to normalize genres of all entries
    
     // run this to insert movies from movies.tsv before calling this route
