@@ -154,6 +154,15 @@ router.get('/filmes', function(req, res) { // GET: get all the movies
         res.json(shorts);
     });
 
+}).get('/curtas/:curta_id', function(req, res) { // GET: get a specific short movie by id
+
+    console.log('GET /curtas/' + req.params.curta_id + ' received');
+
+    Imdb.findOne({ _id: req.params.curta_id, titleType: 'short' }, function(err, short) {
+        if(err) res.status(500).json({ message: 'Erro ao buscar por curta' });
+        res.json(short);
+    });
+
 }).get('/normalizar', function(req, res) { // GET: route to normalize genres of all entries
    
     // run this to insert movies from movies.tsv before calling this route
