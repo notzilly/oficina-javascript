@@ -193,6 +193,29 @@ router.get('/filmes', function(req, res) { // GET: get all the movies
         res.json({ message: 'Curta "' + short.primaryTitle + '" excluído com sucesso' });
     });
 
+}).put('/curtas/:curta_id', function(req, res) { // PUT: updates a short movie by id
+
+    console.log('PUT /curtas/' + req.params.curta_id + ' received');
+
+    Imdb.findOne({ _id: req.params.curta_id, titleType: 'short' }, function(err, short) {
+        if(err) res.status(500).json({ message: 'Erro ao editar curta' });
+
+        short.primaryTitle = req.body.tituloPrimario;
+        short.originalTitle = req.body.tituloOriginal;
+        short.startYear = req.body.anoInicio != '' ? req.body.anoInicio : undefined;
+        short.endYear = req.body.anoFim != '' ? req.body.anoFim : undefined;
+        short.runtimeMinutes = req.body.duracaoMinutos != '' ? req.body.duracaoMinutos : undefined;
+        short.genres = req.body.generos != '' ? req.body.generos : undefined;
+
+        res.json({ message: 'Curta "' + short.primaryTitle + '" editado com sucesso' });
+        // comment the line above and uncomment the ones below when in production
+        // short.save(function(err, short) {
+        //     if(err) res.status(500).json({ message: err });
+        //     res.json({ message: 'Curta "' + short.primaryTitle + '" editado com sucesso' });
+        // });
+
+    });
+
 }).get('/normalizar', function(req, res) { // GET: route to normalize genres of all entries
    
     // run this to insert movies from movies.tsv before calling this route
