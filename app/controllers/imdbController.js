@@ -79,7 +79,16 @@ router.get('/filmes', function(req, res) { // get all the movies
     console.log('GET /series received');
 
     Imdb.find({ titleType: 'tvSeries' }, function(err, series) {
-        if(err) res.status(500).json({ message: 'Erro ao buscar todos as séries' });
+        if(err) res.status(500).json({ message: 'Erro ao buscar todas as séries' });
+        res.json(series);
+    });
+
+}).get('/series/:serie_id', function(req, res) { // get a specific tvseries by id
+
+    console.log('GET /series/' + req.params.serie_id + ' received');
+
+    Imdb.findOne({ _id: req.params.serie_id, titleType: 'tvSeries' }, function(err, series) {
+        if(err) res.status(500).json({ message: 'Erro ao buscar por série' });
         res.json(series);
     });
 
