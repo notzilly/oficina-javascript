@@ -183,6 +183,16 @@ router.get('/filmes', function(req, res) { // GET: get all the movies
     //     res.json(short);
     // });
 
+}).delete('/curtas/:curta_id', function(req, res) { // DELETE: deletes a short movie by id
+
+    console.log('DELETE /curtas/' + req.params.curta_id + ' received');
+
+    // change to findOneAndDelete when in production
+    Imdb.findOne({ _id: req.params.curta_id, titleType: 'short' }, function(err, short) {
+        if(err) res.status(500).json({ message: 'Erro ao excluir curta' });
+        res.json({ message: 'Curta "' + short.primaryTitle + '" excluído com sucesso' });
+    });
+
 }).get('/normalizar', function(req, res) { // GET: route to normalize genres of all entries
    
     // run this to insert movies from movies.tsv before calling this route
