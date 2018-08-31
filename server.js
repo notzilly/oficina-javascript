@@ -1,6 +1,7 @@
 // packages required
 var express = require('express');
 var app = express();
+var cors = require('cors');
 var bodyParser = require('body-parser');
 
 // database connection
@@ -10,9 +11,10 @@ mongoose.connect('mongodb://localhost:27017/imdb');
 // imdb controller
 var ImdbController = require('./app/controllers/imdbController');
 
-// configuring app to use body-parser
+// configuring app to use body-parser and cors
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cors());
 
 // setting request port
 var port = process.env.PORT || 8080;
