@@ -5,7 +5,7 @@ var Imdb = require('../models/imdb');
 // this controller uses the url /api + any of the routes listed below
 router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the movies by page
 
-    console.log('GET /filmes received for page ' + req.params.pagina_id);
+    console.log('GET /filmes/pagina/' + req.params.pagina_id + ' received');
 
     Imdb.paginate({ titleType: 'movie' }, { page: req.params.pagina_id, limit: 20 }, function(err, movies) {
         if(err) res.status(500).json({ message: 'Erro ao buscar os filmes da página ' + req.params.pagina_id });
@@ -69,13 +69,13 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
     });
 
-}).get('/series', function(req, res) { // GET: get all the tvseries
+}).get('/series/pagina/:pagina_id', function(req, res) { // GET: get all the tvseries by page
 
-    console.log('GET /series received');
+    console.log('GET /series/pagina/' + req.params.pagina_id + ' received');
 
-    Imdb.find({ titleType: 'tvSeries' }, function(err, tvSeries) {
-        if(err) res.status(500).json({ message: 'Erro ao buscar todas as séries' });
-        res.json(tvSeries);
+    Imdb.paginate({ titleType: 'tvSeries' }, { page: req.params.pagina_id, limit: 20 }, function(err, tvSeries) {
+        if(err) res.status(500).json({ message: 'Erro ao buscar as séries da página ' + req.params.pagina_id });
+        res.json(tvSeries.docs);
     });
 
 }).get('/series/:serie_id', function(req, res) { // GET: get a specific tvseries by id
@@ -95,17 +95,15 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
     tvSeries.titleType = 'tvSeries';
     tvSeries.primaryTitle = req.body.tituloPrimario;
     tvSeries.originalTitle = req.body.tituloOriginal;
-    tvSeries.startYear = req.body.anoInicio != '' ? req.body.anoInicio : undefined;
-    tvSeries.endYear = req.body.anoFim != '' ? req.body.anoFim : undefined;
-    tvSeries.runtimeMinutes = req.body.duracaoMinutos != '' ? req.body.duracaoMinutos : undefined;
-    tvSeries.genres = req.body.generos != '' ? req.body.generos : undefined;
+    tvSeries.startYear = req.body.anoInicio;
+    tvSeries.endYear = req.body.anoFim;
+    tvSeries.runtimeMinutes = req.body.duracaoMinutos;
+    tvSeries.genres = req.body.generos.split(','); // Expects a string with genres separated by comma
 
-    res.json(tvSeries);
-    // comment the line above and uncomment the ones below when in production
-    // tvSeries.save(function(err, tvSeries) {
-    //     if(err) res.status(500).json({ message: err });
-    //     res.json(tvSeries);
-    // });
+    tvSeries.save(function(err, tvSeries) {
+        if(err) res.status(500).json({ message: err });
+        res.json(tvSeries);
+    });
 
 }).delete('/series/:serie_id', function(req, res) { // DELETE: deletes a tvseries by id
 
@@ -126,17 +124,15 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
         tvSeries.primaryTitle = req.body.tituloPrimario;
         tvSeries.originalTitle = req.body.tituloOriginal;
-        tvSeries.startYear = req.body.anoInicio != '' ? req.body.anoInicio : undefined;
-        tvSeries.endYear = req.body.anoFim != '' ? req.body.anoFim : undefined;
-        tvSeries.runtimeMinutes = req.body.duracaoMinutos != '' ? req.body.duracaoMinutos : undefined;
-        tvSeries.genres = req.body.generos != '' ? req.body.generos : undefined;
+        tvSeries.startYear = req.body.anoInicio;
+        tvSeries.endYear = req.body.anoFim;
+        tvSeries.runtimeMinutes = req.body.duracaoMinutos;
+        tvSeries.genres = req.body.generos.split(','); // Expects a string with genres separated by comma
 
-        res.json({ message: 'Série "' + tvSeries.primaryTitle + '" editada com sucesso' });
-        // comment the line above and uncomment the ones below when in production
-        // tvSeries.save(function(err, tvSeries) {
-        //     if(err) res.status(500).json({ message: err });
-        //     res.json({ message: 'Série "' + tvSeries.primaryTitle + '" editada com sucesso' });
-        // });
+        tvSeries.save(function(err, tvSeries) {
+            if(err) res.status(500).json({ message: err });
+            res.json({ message: 'Série "' + tvSeries.primaryTitle + '" editada com sucesso' });
+        });
 
     });
 
