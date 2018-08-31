@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var mongoosePaginate = require('mongoose-paginate');
 var Schema = mongoose.Schema;
 
 var ImdbSchema = new Schema({
@@ -45,5 +46,7 @@ var ImdbSchema = new Schema({
         }
     }
 });
+
+ImdbSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Imdb', ImdbSchema, 'imdb');
