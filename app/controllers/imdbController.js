@@ -3,13 +3,13 @@ var router = express.Router();
 var Imdb = require('../models/imdb');
 
 // this controller uses the url /api + any of the routes listed below
-router.get('/filmes', function(req, res) { // GET: get all the movies
+router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the movies by page
 
-    console.log('GET /filmes received');
+    console.log('GET /filmes received for page ' + req.params.pagina_id);
 
-    Imdb.find({ titleType: 'movie' }, function(err, movies) {
-        if(err) res.status(500).json({ message: 'Erro ao buscar todos os filmes' });
-        res.json(movies);
+    Imdb.paginate({ titleType: 'movie' }, { page: req.params.pagina_id, limit: 20 }, function(err, movies) {
+        if(err) res.status(500).json({ message: 'Erro ao buscar os filmes da página ' + req.params.pagina_id });
+        res.json(movies.docs);
     });
 
 }).get('/filmes/:filme_id', function(req, res) { // GET: get a specific movie by id
@@ -29,24 +29,21 @@ router.get('/filmes', function(req, res) { // GET: get all the movies
     movie.titleType = 'movie';
     movie.primaryTitle = req.body.tituloPrimario;
     movie.originalTitle = req.body.tituloOriginal;
-    movie.startYear = req.body.anoInicio != '' ? req.body.anoInicio : undefined;
-    movie.endYear = req.body.anoFim != '' ? req.body.anoFim : undefined;
-    movie.runtimeMinutes = req.body.duracaoMinutos != '' ? req.body.duracaoMinutos : undefined;
-    movie.genres = req.body.generos != '' ? req.body.generos : undefined;
+    movie.startYear = req.body.anoInicio;
+    movie.endYear = req.body.anoFim;
+    movie.runtimeMinutes = req.body.duracaoMinutos;
+    movie.genres = req.body.generos.split(','); // Expects a string with genres separated by comma
 
-    res.json(movie);
-    // comment the line above and uncomment the ones below when in production
-    // movie.save(function(err, movie) {
-    //     if(err) res.status(500).json({ message: err });
-    //     res.json(movie);
-    // });
+    movie.save(function(err, movie) {
+        if(err) res.status(500).json({ message: err });
+        res.json(movie);
+    });
 
 }).delete('/filmes/:filme_id', function(req, res) { // DELETE: deletes a movie by id
 
     console.log('DELETE /filmes/' + req.params.filme_id + ' received');
 
-    // change to findOneAndDelete when in production
-    Imdb.findOne({ _id: req.params.filme_id, titleType: 'movie' }, function(err, movie) {
+    Imdb.findOneAndDelete({ _id: req.params.filme_id, titleType: 'movie' }, function(err, movie) {
         if(err) res.status(500).json({ message: 'Erro ao excluir filme' });
         res.json({ message: 'Filme "' + movie.primaryTitle + '" excluído com sucesso' });
     });
@@ -60,17 +57,15 @@ router.get('/filmes', function(req, res) { // GET: get all the movies
 
         movie.primaryTitle = req.body.tituloPrimario;
         movie.originalTitle = req.body.tituloOriginal;
-        movie.startYear = req.body.anoInicio != '' ? req.body.anoInicio : undefined;
-        movie.endYear = req.body.anoFim != '' ? req.body.anoFim : undefined;
-        movie.runtimeMinutes = req.body.duracaoMinutos != '' ? req.body.duracaoMinutos : undefined;
-        movie.genres = req.body.generos != '' ? req.body.generos : undefined;
+        movie.startYear = req.body.anoInicio;
+        movie.endYear = req.body.anoFim;
+        movie.runtimeMinutes = req.body.duracaoMinutos;
+        movie.genres = req.body.generos.split(','); // Expects a string with genres separated by comma
 
-        res.json({ message: 'Filme "' + movie.primaryTitle + '" editado com sucesso' });
-        // comment the line above and uncomment the ones below when in production
-        // movie.save(function(err, movie) {
-        //     if(err) res.status(500).json({ message: err });
-        //     res.json({ message: 'Filme "' + movie.primaryTitle + '" editado com sucesso' });
-        // });
+        movie.save(function(err, movie) {
+            if(err) res.status(500).json({ message: err });
+            res.json({ message: 'Filme "' + movie.primaryTitle + '" editado com sucesso' });
+        });
 
     });
 
