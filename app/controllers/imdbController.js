@@ -136,13 +136,13 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
     });
 
-}).get('/curtas', function(req, res) { // GET: get all the short movies
+}).get('/curtas/pagina/:pagina_id', function(req, res) { // GET: get all the short movies by page
 
-    console.log('GET /curtas received');
+    console.log('GET /curtas/pagina/' + req.params.pagina_id + ' received');
 
-    Imdb.find({ titleType: 'short' }, function(err, shorts) {
-        if(err) res.status(500).json({ message: 'Erro ao buscar todos os curtas' });
-        res.json(shorts);
+    Imdb.paginate({ titleType: 'short' }, { page: req.params.pagina_id, limit: 20 }, function(err, shorts) {
+        if(err) res.status(500).json({ message: 'Erro ao buscar os curtas da página ' + req.params.pagina_id });
+        res.json(shorts.docs);
     });
 
 }).get('/curtas/:curta_id', function(req, res) { // GET: get a specific short movie by id
@@ -162,24 +162,21 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
     short.titleType = 'short';
     short.primaryTitle = req.body.tituloPrimario;
     short.originalTitle = req.body.tituloOriginal;
-    short.startYear = req.body.anoInicio != '' ? req.body.anoInicio : undefined;
-    short.endYear = req.body.anoFim != '' ? req.body.anoFim : undefined;
-    short.runtimeMinutes = req.body.duracaoMinutos != '' ? req.body.duracaoMinutos : undefined;
-    short.genres = req.body.generos != '' ? req.body.generos : undefined;
+    short.startYear = req.body.anoInicio;
+    short.endYear = req.body.anoFim;
+    short.runtimeMinutes = req.body.duracaoMinutos;
+    short.genres = req.body.generos.split(',');
 
-    res.json(short);
-    // comment the line above and uncomment the ones below when in production
-    // short.save(function(err, short) {
-    //     if(err) res.status(500).json({ message: err });
-    //     res.json(short);
-    // });
+    short.save(function(err, short) {
+        if(err) res.status(500).json({ message: err });
+        res.json(short);
+    });
 
 }).delete('/curtas/:curta_id', function(req, res) { // DELETE: deletes a short movie by id
 
     console.log('DELETE /curtas/' + req.params.curta_id + ' received');
 
-    // change to findOneAndDelete when in production
-    Imdb.findOne({ _id: req.params.curta_id, titleType: 'short' }, function(err, short) {
+    Imdb.findOneAndDelete({ _id: req.params.curta_id, titleType: 'short' }, function(err, short) {
         if(err) res.status(500).json({ message: 'Erro ao excluir curta' });
         res.json({ message: 'Curta "' + short.primaryTitle + '" excluído com sucesso' });
     });
@@ -193,17 +190,15 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
         short.primaryTitle = req.body.tituloPrimario;
         short.originalTitle = req.body.tituloOriginal;
-        short.startYear = req.body.anoInicio != '' ? req.body.anoInicio : undefined;
-        short.endYear = req.body.anoFim != '' ? req.body.anoFim : undefined;
-        short.runtimeMinutes = req.body.duracaoMinutos != '' ? req.body.duracaoMinutos : undefined;
-        short.genres = req.body.generos != '' ? req.body.generos : undefined;
+        short.startYear = req.body.anoInicio;
+        short.endYear = req.body.anoFim;
+        short.runtimeMinutes = req.body.duracaoMinutos;
+        short.genres = req.body.generos.split(',');
 
-        res.json({ message: 'Curta "' + short.primaryTitle + '" editado com sucesso' });
-        // comment the line above and uncomment the ones below when in production
-        // short.save(function(err, short) {
-        //     if(err) res.status(500).json({ message: err });
-        //     res.json({ message: 'Curta "' + short.primaryTitle + '" editado com sucesso' });
-        // });
+        short.save(function(err, short) {
+            if(err) res.status(500).json({ message: err });
+            res.json({ message: 'Curta "' + short.primaryTitle + '" editado com sucesso' });
+        });
 
     });
 
