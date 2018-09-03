@@ -7,8 +7,8 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
     console.log('GET /filmes/pagina/' + req.params.pagina_id + ' received');
 
-    Imdb.paginate({ titleType: 'movie' }, { page: req.params.pagina_id, limit: 20 }, function(err, movies) {
-        if(err) res.status(500).json({ message: 'Erro ao buscar os filmes da página ' + req.params.pagina_id });
+    Imdb.paginate({ tipoTitulo: 'movie' }, { page: req.params.pagina_id, limit: 20 }, function(err, movies) {
+        if(err) res.status(500).json({ mensagem: 'Erro ao buscar os filmes da página ' + req.params.pagina_id });
         res.json(movies.docs);
     });
 
@@ -16,8 +16,8 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
     console.log('GET /filmes/' + req.params.filme_id + ' received');
 
-    Imdb.findOne({ _id: req.params.filme_id, titleType: 'movie' }, function(err, movie) {
-        if(err) res.status(500).json({ message: 'Erro ao buscar por filme' });
+    Imdb.findOne({ _id: req.params.filme_id, tipoTitulo: 'movie' }, function(err, movie) {
+        if(err) res.status(500).json({ mensagem: 'Erro ao buscar por filme' });
         res.json(movie);
     });
 
@@ -25,17 +25,12 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
     console.log('POST /filmes received');
 
-    var movie = new Imdb();
-    movie.titleType = 'movie';
-    movie.primaryTitle = req.body.tituloPrimario;
-    movie.originalTitle = req.body.tituloOriginal;
-    movie.startYear = req.body.anoInicio;
-    movie.endYear = req.body.anoFim;
-    movie.runtimeMinutes = req.body.duracaoMinutos;
-    movie.genres = req.body.generos.split(','); // Expects a string with genres separated by comma
+    var movie = new Imdb(req.body);
+    movie.tipoTitulo = 'movie';
+    movie.generos = req.body.generos.split(','); // Expects a string with genres separated by comma
 
     movie.save(function(err, movie) {
-        if(err) res.status(500).json({ message: err });
+        if(err) res.status(500).json({ mensagem: err });
         res.json(movie);
     });
 
@@ -43,28 +38,28 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
     console.log('DELETE /filmes/' + req.params.filme_id + ' received');
 
-    Imdb.findOneAndDelete({ _id: req.params.filme_id, titleType: 'movie' }, function(err, movie) {
-        if(err) res.status(500).json({ message: 'Erro ao excluir filme' });
-        res.json({ message: 'Filme "' + movie.primaryTitle + '" excluído com sucesso' });
+    Imdb.findOneAndDelete({ _id: req.params.filme_id, tipoTitulo: 'movie' }, function(err, movie) {
+        if(err) res.status(500).json({ mensagem: 'Erro ao excluir filme' });
+        res.json({ mensagem: 'Filme "' + movie.tituloPrimario + '" excluído com sucesso' });
     });
 
 }).put('/filmes/:filme_id', function(req, res) { // PUT: updates a movie by id
 
     console.log('PUT /filmes/' + req.params.filme_id + ' received');
 
-    Imdb.findOne({ _id: req.params.filme_id, titleType: 'movie' }, function(err, movie) {
-        if(err) res.status(500).json({ message: 'Erro ao editar filme' });
+    Imdb.findOne({ _id: req.params.filme_id, tipoTitulo: 'movie' }, function(err, movie) {
+        if(err) res.status(500).json({ mensagem: 'Erro ao editar filme' });
 
-        movie.primaryTitle = req.body.tituloPrimario;
-        movie.originalTitle = req.body.tituloOriginal;
-        movie.startYear = req.body.anoInicio;
-        movie.endYear = req.body.anoFim;
-        movie.runtimeMinutes = req.body.duracaoMinutos;
-        movie.genres = req.body.generos.split(','); // Expects a string with genres separated by comma
+        movie.tituloPrimario = req.body.tituloPrimario;
+        movie.tituloOriginal = req.body.tituloOriginal;
+        movie.anoInicio = req.body.anoInicio;
+        movie.anoFim = req.body.anoFim;
+        movie.duracaoMinutos = req.body.duracaoMinutos;
+        movie.generos = req.body.generos.split(','); // Expects a string with genres separated by comma
 
         movie.save(function(err, movie) {
-            if(err) res.status(500).json({ message: err });
-            res.json({ message: 'Filme "' + movie.primaryTitle + '" editado com sucesso' });
+            if(err) res.status(500).json({ mensagem: err });
+            res.json({ mensagem: 'Filme "' + movie.tituloPrimario + '" editado com sucesso' });
         });
 
     });
@@ -73,8 +68,8 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
     console.log('GET /series/pagina/' + req.params.pagina_id + ' received');
 
-    Imdb.paginate({ titleType: 'tvSeries' }, { page: req.params.pagina_id, limit: 20 }, function(err, tvSeries) {
-        if(err) res.status(500).json({ message: 'Erro ao buscar as séries da página ' + req.params.pagina_id });
+    Imdb.paginate({ tipoTitulo: 'tvSeries' }, { page: req.params.pagina_id, limit: 20 }, function(err, tvSeries) {
+        if(err) res.status(500).json({ mensagem: 'Erro ao buscar as séries da página ' + req.params.pagina_id });
         res.json(tvSeries.docs);
     });
 
@@ -82,8 +77,8 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
     console.log('GET /series/' + req.params.serie_id + ' received');
 
-    Imdb.findOne({ _id: req.params.serie_id, titleType: 'tvSeries' }, function(err, tvSeries) {
-        if(err) res.status(500).json({ message: 'Erro ao buscar por série' });
+    Imdb.findOne({ _id: req.params.serie_id, tipoTitulo: 'tvSeries' }, function(err, tvSeries) {
+        if(err) res.status(500).json({ mensagem: 'Erro ao buscar por série' });
         res.json(tvSeries);
     });
 
@@ -91,17 +86,12 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
     console.log('POST /series received');
 
-    var tvSeries = new Imdb();
-    tvSeries.titleType = 'tvSeries';
-    tvSeries.primaryTitle = req.body.tituloPrimario;
-    tvSeries.originalTitle = req.body.tituloOriginal;
-    tvSeries.startYear = req.body.anoInicio;
-    tvSeries.endYear = req.body.anoFim;
-    tvSeries.runtimeMinutes = req.body.duracaoMinutos;
-    tvSeries.genres = req.body.generos.split(','); // Expects a string with genres separated by comma
+    var tvSeries = new Imdb(req.body);
+    tvSeries.tipoTitulo = 'tvSeries';
+    tvSeries.generos = req.body.generos.split(','); // Expects a string with genres separated by comma
 
     tvSeries.save(function(err, tvSeries) {
-        if(err) res.status(500).json({ message: err });
+        if(err) res.status(500).json({ mensagem: err });
         res.json(tvSeries);
     });
 
@@ -109,29 +99,28 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
     console.log('DELETE /series/' + req.params.serie_id + ' received');
 
-    // change to findOneAndDelete when in production
-    Imdb.findOne({ _id: req.params.serie_id, titleType: 'tvSeries' }, function(err, tvSeries) {
-        if(err) res.status(500).json({ message: 'Erro ao excluir série' });
-        res.json({ message: 'Série "' + tvSeries.primaryTitle + '" excluída com sucesso' });
+    Imdb.findOneAndDelete({ _id: req.params.serie_id, tipoTitulo: 'tvSeries' }, function(err, tvSeries) {
+        if(err) res.status(500).json({ mensagem: 'Erro ao excluir série' });
+        res.json({ mensagem: 'Série "' + tvSeries.tituloPrimario + '" excluída com sucesso' });
     });
 
 }).put('/series/:serie_id', function(req, res) { // PUT: updates a tv series by id
 
     console.log('PUT /series/' + req.params.serie_id + ' received');
 
-    Imdb.findOne({ _id: req.params.serie_id, titleType: 'tvSeries' }, function(err, tvSeries) {
-        if(err) res.status(500).json({ message: 'Erro ao editar série' });
+    Imdb.findOne({ _id: req.params.serie_id, tipoTitulo: 'tvSeries' }, function(err, tvSeries) {
+        if(err) res.status(500).json({ mensagem: 'Erro ao editar série' });
 
-        tvSeries.primaryTitle = req.body.tituloPrimario;
-        tvSeries.originalTitle = req.body.tituloOriginal;
-        tvSeries.startYear = req.body.anoInicio;
-        tvSeries.endYear = req.body.anoFim;
-        tvSeries.runtimeMinutes = req.body.duracaoMinutos;
-        tvSeries.genres = req.body.generos.split(','); // Expects a string with genres separated by comma
+        tvSeries.tituloPrimario = req.body.tituloPrimario;
+        tvSeries.tituloOriginal = req.body.tituloOriginal;
+        tvSeries.anoInicio = req.body.anoInicio;
+        tvSeries.anoFim = req.body.anoFim;
+        tvSeries.duracaoMinutos = req.body.duracaoMinutos;
+        tvSeries.generos = req.body.generos.split(','); // Expects a string with genres separated by comma
 
         tvSeries.save(function(err, tvSeries) {
-            if(err) res.status(500).json({ message: err });
-            res.json({ message: 'Série "' + tvSeries.primaryTitle + '" editada com sucesso' });
+            if(err) res.status(500).json({ mensagem: err });
+            res.json({ mensagem: 'Série "' + tvSeries.tituloPrimario + '" editada com sucesso' });
         });
 
     });
@@ -140,8 +129,8 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
     console.log('GET /curtas/pagina/' + req.params.pagina_id + ' received');
 
-    Imdb.paginate({ titleType: 'short' }, { page: req.params.pagina_id, limit: 20 }, function(err, shorts) {
-        if(err) res.status(500).json({ message: 'Erro ao buscar os curtas da página ' + req.params.pagina_id });
+    Imdb.paginate({ tipoTitulo: 'short' }, { page: req.params.pagina_id, limit: 20 }, function(err, shorts) {
+        if(err) res.status(500).json({ mensagem: 'Erro ao buscar os curtas da página ' + req.params.pagina_id });
         res.json(shorts.docs);
     });
 
@@ -149,8 +138,8 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
     console.log('GET /curtas/' + req.params.curta_id + ' received');
 
-    Imdb.findOne({ _id: req.params.curta_id, titleType: 'short' }, function(err, short) {
-        if(err) res.status(500).json({ message: 'Erro ao buscar por curta' });
+    Imdb.findOne({ _id: req.params.curta_id, tipoTitulo: 'short' }, function(err, short) {
+        if(err) res.status(500).json({ mensagem: 'Erro ao buscar por curta' });
         res.json(short);
     });
 
@@ -158,17 +147,12 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
     console.log('POST /curtas received');
 
-    var short = new Imdb();
-    short.titleType = 'short';
-    short.primaryTitle = req.body.tituloPrimario;
-    short.originalTitle = req.body.tituloOriginal;
-    short.startYear = req.body.anoInicio;
-    short.endYear = req.body.anoFim;
-    short.runtimeMinutes = req.body.duracaoMinutos;
-    short.genres = req.body.generos.split(',');
+    var short = new Imdb(req.body);
+    short.tipoTitulo = 'short';
+    short.generos = req.body.generos.split(',');
 
     short.save(function(err, short) {
-        if(err) res.status(500).json({ message: err });
+        if(err) res.status(500).json({ mensagem: err });
         res.json(short);
     });
 
@@ -176,28 +160,28 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
     console.log('DELETE /curtas/' + req.params.curta_id + ' received');
 
-    Imdb.findOneAndDelete({ _id: req.params.curta_id, titleType: 'short' }, function(err, short) {
-        if(err) res.status(500).json({ message: 'Erro ao excluir curta' });
-        res.json({ message: 'Curta "' + short.primaryTitle + '" excluído com sucesso' });
+    Imdb.findOneAndDelete({ _id: req.params.curta_id, tipoTitulo: 'short' }, function(err, short) {
+        if(err) res.status(500).json({ mensagem: 'Erro ao excluir curta' });
+        res.json({ mensagem: 'Curta "' + short.tituloPrimario + '" excluído com sucesso' });
     });
 
 }).put('/curtas/:curta_id', function(req, res) { // PUT: updates a short movie by id
 
     console.log('PUT /curtas/' + req.params.curta_id + ' received');
 
-    Imdb.findOne({ _id: req.params.curta_id, titleType: 'short' }, function(err, short) {
-        if(err) res.status(500).json({ message: 'Erro ao editar curta' });
+    Imdb.findOne({ _id: req.params.curta_id, tipoTitulo: 'short' }, function(err, short) {
+        if(err) res.status(500).json({ mensagem: 'Erro ao editar curta' });
 
-        short.primaryTitle = req.body.tituloPrimario;
-        short.originalTitle = req.body.tituloOriginal;
-        short.startYear = req.body.anoInicio;
-        short.endYear = req.body.anoFim;
-        short.runtimeMinutes = req.body.duracaoMinutos;
-        short.genres = req.body.generos.split(',');
+        short.tituloPrimario = req.body.tituloPrimario;
+        short.tituloOriginal = req.body.tituloOriginal;
+        short.anoInicio = req.body.anoInicio;
+        short.anoFim = req.body.anoFim;
+        short.duracaoMinutos = req.body.duracaoMinutos;
+        short.generos = req.body.generos.split(',');
 
         short.save(function(err, short) {
-            if(err) res.status(500).json({ message: err });
-            res.json({ message: 'Curta "' + short.primaryTitle + '" editado com sucesso' });
+            if(err) res.status(500).json({ mensagem: err });
+            res.json({ mensagem: 'Curta "' + short.tituloPrimario + '" editado com sucesso' });
         });
 
     });
@@ -211,9 +195,9 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
     Imdb.find().cursor().on('data', function(entry) {
         
-        if(entry.genres.length != 0){
-            var genres = entry.genres[0].split(',');
-            entry.genres = genres;
+        if(entry.generos.length != 0){
+            var genres = entry.generos[0].split(',');
+            entry.generos = genres;
             entry.save(function(err, updatedMovie) {
                 if(err) console.log(err);
             });
@@ -221,7 +205,7 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
     }).on('end', function(){
 
-        res.json({ message: 'Entradas normalizadas' });
+        res.json({ mensagem: 'Entradas normalizadas' });
 
     });
 
