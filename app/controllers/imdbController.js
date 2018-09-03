@@ -7,7 +7,7 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
     console.log('GET /filmes/pagina/' + req.params.pagina_id + ' received');
 
-    Imdb.paginate({ tipoTitulo: 'movie' }, { page: req.params.pagina_id, limit: 20 }, function(err, movies) {
+    Imdb.paginate({ tipoTitulo: 'movie' }, { page: req.params.pagina_id, limit: 10 }, function(err, movies) {
         if(err) res.status(500).json({ mensagem: 'Erro ao buscar os filmes da página ' + req.params.pagina_id });
         res.json(movies.docs);
     });
@@ -68,7 +68,7 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
     console.log('GET /series/pagina/' + req.params.pagina_id + ' received');
 
-    Imdb.paginate({ tipoTitulo: 'tvSeries' }, { page: req.params.pagina_id, limit: 20 }, function(err, tvSeries) {
+    Imdb.paginate({ tipoTitulo: 'tvSeries' }, { page: req.params.pagina_id, limit: 10 }, function(err, tvSeries) {
         if(err) res.status(500).json({ mensagem: 'Erro ao buscar as séries da página ' + req.params.pagina_id });
         res.json(tvSeries.docs);
     });
@@ -129,7 +129,7 @@ router.get('/filmes/pagina/:pagina_id', function(req, res) { // GET: get all the
 
     console.log('GET /curtas/pagina/' + req.params.pagina_id + ' received');
 
-    Imdb.paginate({ tipoTitulo: 'short' }, { page: req.params.pagina_id, limit: 20 }, function(err, shorts) {
+    Imdb.paginate({ tipoTitulo: 'short' }, { page: req.params.pagina_id, limit: 10 }, function(err, shorts) {
         if(err) res.status(500).json({ mensagem: 'Erro ao buscar os curtas da página ' + req.params.pagina_id });
         res.json(shorts.docs);
     });
